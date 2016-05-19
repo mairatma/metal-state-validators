@@ -3,28 +3,16 @@
 import typeValidators from '../src/type';
 
 describe('Type', function() {
-	beforeEach(function() {
-		sinon.stub(console, 'error');
-	});
-
-	afterEach(function() {
-		console.error.restore();
-	});
-
 	it('should validate an array', function() {
 		assert.isTrue(typeValidators.array([], null, this));
-		assert.isFalse(console.error.called);
 
-		assert.isTrue(typeValidators.array('string', null, this));
-		assert.isTrue(console.error.called);
+		assert.instanceOf(typeValidators.array('string', null, this), Error);
 	});
 
 	it('should validate a boolean', function() {
 		assert.isTrue(typeValidators.bool(true));
-		assert.isFalse(console.error.called);
 
-		assert.isTrue(typeValidators.bool('true'));
-		assert.isTrue(console.error.called);
+		assert.instanceOf(typeValidators.bool('true'), Error);
 	});
 
 	it('should validate a function', function() {
@@ -33,36 +21,28 @@ describe('Type', function() {
 		};
 
 		assert.isTrue(typeValidators.func(testFn));
-		assert.isFalse(console.error.called);
 
-		assert.isTrue(typeValidators.func('testFn'));
-		assert.isTrue(console.error.called);
+		assert.instanceOf(typeValidators.func('testFn'), Error);
 	});
 
 	it('should validate a number', function() {
 		assert.isTrue(typeValidators.number(1));
-		assert.isFalse(console.error.called);
 
-		assert.isTrue(typeValidators.number('1'));
-		assert.isTrue(console.error.called);
+		assert.instanceOf(typeValidators.number('1'), Error);
 	});
 
 	it('should validate a object', function() {
 		const obj = {};
 
 		assert.isTrue(typeValidators.object(obj));
-		assert.isFalse(console.error.called);
 
-		assert.isTrue(typeValidators.object('obj'));
-		assert.isTrue(console.error.called);
+		assert.instanceOf(typeValidators.object('obj'), Error);
 	});
 
 	it('should validate a string', function() {
 		assert.isTrue(typeValidators.string('testString'));
-		assert.isFalse(console.error.called);
 
-		assert.isTrue(typeValidators.string(false));
-		assert.isTrue(console.error.called);
+		assert.instanceOf(typeValidators.string(false), Error);
 	});
 
 	it('should validate any type', function() {
@@ -72,20 +52,16 @@ describe('Type', function() {
 		typeValidators.any(1);
 		typeValidators.any(function() {});
 
-		assert.isFalse(console.error.called);
 	});
 
 	it('should validate an array of a single type', function() {
 		const arrayOfNumbers = typeValidators.arrayOf(typeValidators.number);
 
 		assert.isTrue(arrayOfNumbers([1, 2, 3, 4]));
-		assert.isFalse(console.error.called);
 
-		assert.isTrue(arrayOfNumbers([1, 2, 3, '4']));
-		assert.isTrue(console.error.called);
+		assert.instanceOf(arrayOfNumbers([1, 2, 3, '4']), Error);
 
-		assert.isTrue(arrayOfNumbers({}));
-		assert.isTrue(console.error.called);
+		assert.instanceOf(arrayOfNumbers({}), Error);
 	});
 
 	it('should validate an instance of a class', function() {
@@ -97,10 +73,8 @@ describe('Type', function() {
 		const instanceOfFn = typeValidators.instanceOf(TestClass);
 
 		assert.isTrue(instanceOfFn(new TestClass()));
-		assert.isFalse(console.error.called);
 
-		assert.isTrue(instanceOfFn(new TestClass2()));
-		assert.isTrue(console.error.called);
+		assert.instanceOf(instanceOfFn(new TestClass2()), Error);
 	});
 
 	it('should validate one of certain types', function() {
@@ -112,23 +86,20 @@ describe('Type', function() {
 		);
 
 		assert.isTrue(oneOfType('test'));
-		assert.isFalse(console.error.called);
 
 		assert.isTrue(oneOfType(1));
-		assert.isFalse(console.error.called);
 
-		assert.isTrue(oneOfType({}));
-		assert.isTrue(console.error.called);
+		assert.instanceOf(oneOfType({}), Error);
 	});
 
 	it('should fail if an array is not supplied to oneOfType', function() {
-		typeValidators.oneOfType(
+		var validator = typeValidators.oneOfType(
 			{
 				one: typeValidators.string
 			}
 		);
 
-		assert.isTrue(console.error.called);
+		assert.instanceOf(validator(), Error);
 	});
 
 	it('should validate an object with certain types of values', function() {
@@ -138,17 +109,15 @@ describe('Type', function() {
 			a: 1,
 			b: 2
 		}));
-		assert.isFalse(console.error.called);
 
-		assert.isTrue(objectOf({
+		assert.instanceOf(objectOf({
 			a: '1',
 			b: '2'
-		}));
-		assert.isTrue(console.error.called);
+		}), Error);
 	});
 
 	it('should validate a shape of an object', function() {
-		const shape = typeValidators.shape({
+		const shape = typeValidators.shapeOf({
 			a: typeValidators.string,
 			b: typeValidators.number
 		});
@@ -157,18 +126,16 @@ describe('Type', function() {
 			a: '1',
 			b: 2
 		}));
-		assert.isFalse(console.error.called);
 
-		assert.isTrue(shape({
+		assert.instanceOf(shape({
 			a: '1',
 			b: '2'
-		}));
-		assert.isTrue(console.error.called);
+		}), Error);
 	});
 
 	it('should validate a shape nested within a shape', function() {
-		const shape = typeValidators.shape({
-			a: typeValidators.shape({
+		const shape = typeValidators.shapeOf({
+			a: typeValidators.shapeOf({
 				b: typeValidators.string
 			})
 		});
@@ -178,24 +145,45 @@ describe('Type', function() {
 				b: 'test'
 			}
 		}));
-		assert.isFalse(console.error.called);
 
-		assert.isTrue(shape({
+		assert.instanceOf(shape({
 			a: {
 				b: 1
 			}
-		}));
-		assert.isTrue(console.error.called);
+		}), Error);
 
-		assert.isTrue(shape({
+		assert.instanceOf(shape({
 			a: 1
-		}));
-		assert.isTrue(console.error.called);
+		}), Error);
 	});
 
 	it('should fail if an object is not supplied to shape', function() {
-		typeValidators.shape(1);
+		const validator = typeValidators.shapeOf(1);
+		assert.instanceOf(validator(), Error);
+	});
 
-		assert.isTrue(console.error.called);
+	it('should emit warning message', function() {
+		const COMPONENT_NAME = 'componentName';
+		const NAME = 'name';
+		const PARENT_COMPONENT_NAME = 'parentComponent';
+
+		const ERROR_MESSAGE = `Error: Warning: Invalid state passed to '${NAME}'. ` +
+			`Expected type 'string' Passed to '${COMPONENT_NAME}'. Check render ` +
+			`method of '${PARENT_COMPONENT_NAME}'.`;
+
+		const context = {
+			getRenderer: function() {
+				return {
+					lastParentComponent_: {
+						name: PARENT_COMPONENT_NAME
+					}
+				};
+			},
+			name: COMPONENT_NAME
+		};
+
+		const resultError = typeValidators.string(1, NAME, context);
+
+		assert.equal(resultError, ERROR_MESSAGE);
 	});
 });
