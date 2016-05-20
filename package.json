@@ -1,6 +1,6 @@
 {
   "name": "metal-state-validators",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Utility class with helpers for creating validators for Metal.js state",
   "license": "BSD",
   "repository": "metal/metal-state-validators",
