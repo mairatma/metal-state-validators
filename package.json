@@ -8,8 +8,8 @@
     "node": ">=0.12.0",
     "npm": ">=3.0.0"
   },
-  "main": "src/type.js",
-  "browser": "lib/type.js",
+  "jsnext:main": "src/type.js",
+  "main": "lib/type.js",
   "files": [
     "lib",
     "src",
