@@ -2,6 +2,10 @@
 
 import { core } from 'metal';
 
+/**
+ * Provides access to various type validators that will return an
+ * instance of Error when validation fails.
+ */
 const validators = {
 	any: () => true,
 	array: validateType('array'),
@@ -13,8 +17,8 @@ const validators = {
 
 	/**
 	 * Creates a validator that checks the values of an array against a type.
-	 * @param {!function} validator Type validator to check each index against.
-	 * @return {function} Validator.
+	 * @param {function()} validator Type validator to check each index against.
+	 * @return {function()} Validator.
 	 */
 	arrayOf: function(validator) {
 		return (value, name, context) => {
@@ -38,8 +42,8 @@ const validators = {
 
 	/**
 	 * Creates a validator that compares a value to a specific class.
-	 * @param {!function} expectedClass Class to check value against.
-	 * @return {function} Validator.
+	 * @param {function()} expectedClass Class to check value against.
+	 * @return {function()} Validator.
 	 */
 	instanceOf: function(expectedClass) {
 		return (value, name, context) => {
@@ -53,8 +57,8 @@ const validators = {
 
 	/**
 	 * Creates a validator that checks the values of an object against a type.
-	 * @param {!function} typeValidator Validator to check value against.
-	 * @return {function} Validator.
+	 * @param {function()} typeValidator Validator to check value against.
+	 * @return {function()} Validator.
 	 */
 	objectOf: function(typeValidator) {
 		return (value, name, context) => {
@@ -74,8 +78,8 @@ const validators = {
 
 	/**
 	 * Creates a validator that checks a value against multiple types and only has to pass one.
-	 * @param {!array} arrayOfTypeValidators Array of validators to check value against.
-	 * @return {function} Validator.
+	 * @param {!Array} arrayOfTypeValidators Array of validators to check value against.
+	 * @return {function()} Validator.
 	 */
 	oneOfType: function(arrayOfTypeValidators) {
 		if (!Array.isArray(arrayOfTypeValidators)) {
@@ -97,8 +101,8 @@ const validators = {
 
 	/**
 	 * Creates a validator that checks the shape of an object.
-	 * @param {!object} shape An object containing type validators for each key.
-	 * @return {function} Validator.
+	 * @param {!Object} shape An object containing type validators for each key.
+	 * @return {function()} Validator.
 	 */
 	shapeOf: function(shape) {
 		if (getStateType(shape) !== 'object') {
@@ -122,10 +126,10 @@ const validators = {
 
 /**
  * Composes a warning a warning message.
- * @param {!string} error Error message to display to console.
- * @param {string} name Name of state property that is giving the error.
- * @param {object} context.
- * @return {Error}
+ * @param {string} error Error message to display to console.
+ * @param {?string} name Name of state property that is giving the error.
+ * @param {Object} context.
+ * @return {!Error} Instance of Error class.
  */
 function composeError(error, name, context) {
 	const componentName = context ? core.getFunctionName(context) : null;
@@ -139,7 +143,7 @@ function composeError(error, name, context) {
 
 /**
  * Checks type of given value.
- * @param value Any value.
+ * @param {*} value Any value.
  * @return {string} Type of value.
  */
 function getStateType(value) {
@@ -153,8 +157,8 @@ function getStateType(value) {
 
 /**
  * Creates a validator that checks against a specific primitive type.
- * @param {!string} expectedType Type to check against.
- * @return {function} Validator.
+ * @param {string} expectedType Type to check against.
+ * @return {function()} Validator.
  */
 function validateType(expectedType) {
 	return (value, name, context) => {
