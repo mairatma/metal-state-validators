@@ -77,6 +77,29 @@ const validators = {
 	},
 
 	/**
+	 * Creates a validator that checks equality against specific values.
+	 * @param {!Array} arrayOfValues Array of values to check equality against.
+	 * @return {function()} Validator.
+	 */
+	oneOf: function(arrayOfValues) {
+		if (!Array.isArray(arrayOfValues)) {
+			return (value, name, context) => composeError('Expected an array.', name, context);
+		}
+
+		return (value, name, context) => {
+			for (let i = 0; i < arrayOfValues.length; i++) {
+				const oneOfValue = arrayOfValues[i];
+
+				if (value === oneOfValue) {
+					return true;
+				}
+			}
+
+			return composeError('Expected one of given values.', name, context);
+		};
+	},
+
+	/**
 	 * Creates a validator that checks a value against multiple types and only has to pass one.
 	 * @param {!Array} arrayOfTypeValidators Array of validators to check value against.
 	 * @return {function()} Validator.

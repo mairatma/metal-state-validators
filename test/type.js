@@ -77,6 +77,26 @@ describe('Type', function() {
 		assert.instanceOf(instanceOfFn(new TestClass2()), Error);
 	});
 
+	it('should validate equality against an array of values', function() {
+		const validator = typeValidators.oneOf(
+			[
+				'one',
+				1
+			]
+		);
+
+		assert.isTrue(validator('one'));
+		assert.isTrue(validator(1));
+
+		assert.instanceOf(validator('1'), Error);
+	});
+
+	it('should fail if an array is not supplied to oneOf', function() {
+		const validator = typeValidators.oneOf({});
+
+		assert.instanceOf(validator(), Error);
+	});
+
 	it('should validate one of certain types', function() {
 		const oneOfType = typeValidators.oneOfType(
 			[
@@ -93,7 +113,7 @@ describe('Type', function() {
 	});
 
 	it('should fail if an array is not supplied to oneOfType', function() {
-		var validator = typeValidators.oneOfType(
+		const validator = typeValidators.oneOfType(
 			{
 				one: typeValidators.string
 			}
