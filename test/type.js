@@ -195,11 +195,15 @@ describe('Type', function() {
 			getRenderer: function() {
 				return {
 					lastParentComponent_: {
-						name: PARENT_COMPONENT_NAME
+						constructor: {
+							name: PARENT_COMPONENT_NAME
+						}
 					}
 				};
 			},
-			name: COMPONENT_NAME
+			constructor: {
+				name: COMPONENT_NAME
+			}
 		};
 
 		const resultError = typeValidators.string(1, NAME, context);

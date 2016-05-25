@@ -155,9 +155,9 @@ const validators = {
  * @return {!Error} Instance of Error class.
  */
 function composeError(error, name, context) {
-	const componentName = context ? core.getFunctionName(context) : null;
+	const componentName = context ? core.getFunctionName(context.constructor) : null;
 	const parentComponent = context && context.getRenderer ? context.getRenderer().lastParentComponent_ : null;
-	const parentComponentName = parentComponent ? core.getFunctionName(parentComponent) : null;
+	const parentComponentName = parentComponent ? core.getFunctionName(parentComponent.constructor) : null;
 
 	const location = parentComponentName ? `Check render method of '${parentComponentName}'.` : '';
 
