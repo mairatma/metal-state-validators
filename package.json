@@ -18,7 +18,7 @@
   "scripts": {
     "build": "gulp build",
     "compile": "babel --presets es2015 -d lib/ src/",
-    "publish": "npm run compile",
+    "prepublish": "npm run compile",
     "test": "gulp test",
     "watch": "gulp build:watch"
   },
