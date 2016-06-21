@@ -77,6 +77,20 @@ describe('Type', function() {
 		assert.instanceOf(instanceOfFn(new TestClass2()), Error);
 	});
 
+	it('should validate a single type or null', function() {
+		let validator = typeValidators.maybe(typeValidators.number);
+
+		assert.isTrue(validator(1));
+		assert.isTrue(validator(null));
+		assert.instanceOf(validator('1'), Error);
+
+		validator = typeValidators.maybe(typeValidators.object);
+
+		assert.isTrue(validator({}));
+		assert.isTrue(validator(null));
+		assert.instanceOf(validator(1), Error);
+	});
+
 	it('should validate equality against an array of values', function() {
 		const validator = typeValidators.oneOf(
 			[

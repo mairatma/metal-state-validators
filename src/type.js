@@ -56,6 +56,24 @@ const validators = {
 	},
 
 	/**
+	 * Creates a validator that checks a value against a single type or null.
+	 * @param {function()} typeValidator Validator to check value against.
+	 * @return {function()} Validator.
+	 */
+	maybe: function(typeValidator) {
+		return (value, name, context) => {
+			const validation = typeValidator(value, name);
+
+			if (value === null || !(validation instanceof Error)) {
+				return true;
+			}
+
+			return composeError(`${validation.toString} or null`, name, context);
+		};
+	},
+
+
+	/**
 	 * Creates a validator that checks the values of an object against a type.
 	 * @param {function()} typeValidator Validator to check value against.
 	 * @return {function()} Validator.
