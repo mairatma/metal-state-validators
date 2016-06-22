@@ -56,7 +56,7 @@ const validators = {
 	},
 
 	/**
-	 * Creates a validator that checks a value against a single type or null.
+	 * Creates a validator that checks a value against a single type, null, or undefined.
 	 * @param {function()} typeValidator Validator to check value against.
 	 * @return {function()} Validator.
 	 */
@@ -64,7 +64,7 @@ const validators = {
 		return (value, name, context) => {
 			const validation = typeValidator(value, name);
 
-			if (value === null || !(validation instanceof Error)) {
+			if (!core.isDef(value) || core.isNull(value) || !(validation instanceof Error)) {
 				return true;
 			}
 
