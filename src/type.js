@@ -101,7 +101,7 @@ const validators = {
 	 */
 	oneOf: function(arrayOfValues) {
 		if (!Array.isArray(arrayOfValues)) {
-			return (value, name, context) => composeError('Expected an array.', name, context);
+			return (value, name, context) => composeError(`Expected an array, but recieved type '${getStateType(arrayOfValues)}'.`, name, context);
 		}
 
 		return (value, name, context) => {
@@ -124,7 +124,7 @@ const validators = {
 	 */
 	oneOfType: function(arrayOfTypeValidators) {
 		if (!Array.isArray(arrayOfTypeValidators)) {
-			return (value, name, context) => composeError('Expected an array.', name, context);
+			return (value, name, context) => composeError(`Expected an array, but recieved type '${getStateType(arrayOfTypeValidators)}'.`, name, context);
 		}
 
 		return (value, name, context) => {
@@ -146,8 +146,9 @@ const validators = {
 	 * @return {function()} Validator.
 	 */
 	shapeOf: function(shape) {
-		if (getStateType(shape) !== 'object') {
-			return (value, name, context) => composeError(`Expected an object`, name, context);
+		const type = getStateType(shape);
+		if (type !== 'object') {
+			return (value, name, context) => composeError(`Expected an object, but recieved type '${type}'.`, name, context);
 		}
 
 		return (value, name, context) => {
@@ -206,7 +207,7 @@ function validateType(expectedType) {
 		const type = getStateType(value);
 
 		if (type !== expectedType) {
-			return composeError(`Expected type '${expectedType}'`, name, context);
+			return composeError(`Expected type '${expectedType}', but recieved type '${type}'.`, name, context);
 		}
 
 		return true;

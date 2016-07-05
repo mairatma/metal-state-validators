@@ -202,7 +202,7 @@ describe('Type', function() {
 		const PARENT_COMPONENT_NAME = 'parentComponent';
 
 		const ERROR_MESSAGE = `Error: Warning: Invalid state passed to '${NAME}'. ` +
-			`Expected type 'string' Passed to '${COMPONENT_NAME}'. Check render ` +
+			`Expected type 'string', but recieved type 'number'. Passed to '${COMPONENT_NAME}'. Check render ` +
 			`method of '${PARENT_COMPONENT_NAME}'.`;
 
 		const context = {
