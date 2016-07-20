@@ -68,10 +68,9 @@ const validators = {
 				return true;
 			}
 
-			return composeError(`${validation.toString} or null`, name, context);
+			return composeError(`${validation.toString()} or null`, name, context);
 		};
 	},
-
 
 	/**
 	 * Creates a validator that checks the values of an object against a type.
